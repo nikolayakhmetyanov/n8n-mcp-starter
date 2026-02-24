@@ -1,6 +1,6 @@
 {
   "name": "Telegram Echo Starter",
-  "description": "Простой Telegram workflow: принимает входящее сообщение и отправляет echo-ответ в тот же чат. Надёжная схема: Code-узел подставляет chatId из триггера.",
+  "description": "Простой Telegram workflow: принимает входящее сообщение и отправляет ответ «привет» в тот же чат. Надёжная схема: Code-узел Prepare Reply подставляет chatId из триггера (обход бага с полем Chat ID в webhook-режиме).",
   "nodes": [
     {
       "parameters": { "updates": ["message"], "additionalFields": {} },
@@ -42,6 +42,9 @@
   "active": false,
   "settings": { "executionOrder": "v1" },
   "pinData": {},
-  "versionId": "telegram-echo-starter-v2",
-  "meta": { "instanceId": "local-starter" }
+  "meta": {
+    "instanceId": "local-starter",
+    "snapshotAt": "2026-02-24",
+    "workflowIdInN8n": "He9L9QUsdsfTLX0h"
+  }
 }

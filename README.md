@@ -38,9 +38,9 @@ UI: `http://localhost:5678`
 
 ## 4) Настроить AI-агента (Cursor + n8n-mcp)
 
-Файл: `.cursor/mcp.json`
+Скопируйте пример и подставьте свой API key: `cp .cursor/mcp.example.json .cursor/mcp.json`. Файл `.cursor/mcp.json` в git не попадает (в .gitignore).
 
-Убедитесь, что в нем заданы:
+В `.cursor/mcp.json` заданы:
 - `command: "npx"`
 - `args: ["n8n-mcp"]`
 - `MCP_MODE=stdio`
@@ -57,13 +57,16 @@ UI: `http://localhost:5678`
 2. Попросите получить список workflow (или документацию нод).
 3. Если список/документация возвращаются без ошибок — связка `n8n + n8n-mcp` работает.
 
-## 6) Где хранить автоматизации
+## 6) Папка workflows и снимки бота
 
-Все ваши workflow хранятся в папке `workflows/`.
+В `workflows/` лежат **снимки** workflow — портативный JSON без credentials и без webhookId (их n8n подставляет при импорте и активации).
 
-- Пример: `workflows/telegram-echo-workflow.json`
+- **Снимок** — текущее состояние бота, выгруженное из n8n (через UI «Export» или через MCP: `n8n_get_workflow` → сохранить в файл). Используйте снимки для бэкапа и версионирования в git.
+- Пример: `workflows/telegram-echo-workflow.json` — снимок Telegram Echo (Trigger → Prepare Reply (Code) → Telegram Reply).
 
-Правило: каждый workflow JSON должен иметь поле `description`.
+Правила:
+- В каждом JSON есть поле `description`.
+- Credentials в файлы не попадают — после импорта в n8n укажите свой токен бота в узлах Telegram Trigger и Telegram Reply.
 
 ## 7) ngrok — чтобы бот достучался до локального n8n
 
@@ -79,10 +82,10 @@ Telegram шлёт события на вебхук по публичному URL
 
 ## 8) Импорт и запуск примера (Telegram Echo)
 
-1. Импорт: в n8n `Workflows → Import from File` и выберите `workflows/telegram-echo-workflow.json`, либо попросите агента в Cursor импортировать workflow из папки через MCP (`n8n_create_workflow`).
+1. Импорт: в n8n `Workflows → Import from File` и выберите `workflows/telegram-echo-workflow.json`, либо попросите агента в Cursor загрузить workflow через MCP (`n8n_create_workflow` с данными из этого файла).
 2. В узлах **Telegram Trigger** и **Telegram Reply** создайте/выберите credential и вставьте токен бота (из [@BotFather](https://t.me/BotFather)).
-3. Включите workflow (переключатель **Active**).
-4. Напишите боту в Telegram — должен прийти ответ эхом.
+3. Включите workflow (переключатель **Active**). Убедитесь, что в `.env` задан `WEBHOOK_URL` (ngrok) и контейнеры перезапущены.
+4. Напишите боту в Telegram — должен прийти ответ «привет».
 
 ## Остановка
 
