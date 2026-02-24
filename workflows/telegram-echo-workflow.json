@@ -1,0 +1,47 @@
+{
+  "name": "Telegram Echo Starter",
+  "description": "Простой Telegram workflow: принимает входящее сообщение и отправляет echo-ответ в тот же чат. Надёжная схема: Code-узел подставляет chatId из триггера.",
+  "nodes": [
+    {
+      "parameters": { "updates": ["message"], "additionalFields": {} },
+      "id": "telegram-trigger-node",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [288, 288]
+    },
+    {
+      "id": "2807e357-86f9-443a-be6c-e50fb1ef073d",
+      "name": "Prepare Reply",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [456, 288],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "const items = $input.all();\nreturn items.map(item => ({ json: { chatId: item.json.message.chat.id, text: 'привет' } }));"
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ $json.text }}",
+        "additionalFields": {}
+      },
+      "id": "telegram-reply-node",
+      "name": "Telegram Reply",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [624, 288]
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": { "main": [[{ "node": "Prepare Reply", "type": "main", "index": 0 }]] },
+    "Prepare Reply": { "main": [[{ "node": "Telegram Reply", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "pinData": {},
+  "versionId": "telegram-echo-starter-v2",
+  "meta": { "instanceId": "local-starter" }
+}
